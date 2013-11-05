@@ -20,58 +20,6 @@
 
         beforeEach(createDeck);
 
-        describe("deck.firstIndex", function() {
-            it("should always return 0", function() {
-                expect(deck.firstIndex()).toBe(0);
-            });
-        });
-
-        describe("deck.lastIndex", function() {
-            it("should return the index of the last slide", function() {
-                expect(deck.lastIndex()).toBe(9);
-            });
-        });
-
-        describe("deck.first", function() {
-            beforeEach(function() {
-                deck.slide(5);
-            });
-
-            it("should go to first slide", function() {
-                expect(deck.slides[5].classList.contains("bespoke-active")).toBe(true);
-                deck.first();
-                expect(deck.slides[0].classList.contains("bespoke-active")).toBe(true);
-            });
-
-            it("should fire first event", function() {
-                var eventListener = jasmine.createSpy("eventListener"),
-                    off = deck.on("convenient.first", eventListener);
-                deck.first();
-                expect(eventListener).toHaveBeenCalled();
-                off();
-            });
-        });
-
-        describe("deck.last", function() {
-            beforeEach(function() {
-                deck.slide(5);
-            });
-
-            it("should go to last slide", function() {
-                expect(deck.slides[5].classList.contains("bespoke-active")).toBe(true);
-                deck.last();
-                expect(deck.slides[9].classList.contains("bespoke-active")).toBe(true);
-            });
-
-            it("should fire last event", function() {
-                var eventListener = jasmine.createSpy("eventListener"),
-                    off = deck.on("convenient.last", eventListener);
-                deck.last();
-                expect(eventListener).toHaveBeenCalled();
-                off();
-            });
-        });
-
         describe("deck.createEventData", function() {
             var eventNamespace = "spec",
                 eventName = "createEventData";
