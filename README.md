@@ -2,7 +2,7 @@
 
 # bespoke-convenient
 
-Convenient extension methods for building [Bespoke.js](http://markdalgleish.com/projects/bespoke.js) plugins
+Convenient extension methods for building [Bespoke.js][bespoke.js] plugins. This plugin is targeted towards plugin developers, not everyday bespoke users looking to make a nice presentation.
 
 ## Download
 
@@ -22,6 +22,17 @@ bespoke.horizontal.from('article', {
   convenient: true
 });
 ```
+
+Since this is a plugin written for other bespoke plugin developers, have a look at the source files.
+
+```js
+deck.firstIndex();
+deck.lastIndex();
+deck.first();
+deck.last();
+deck.createEventData();
+```
+
 
 ## Package managers
 
@@ -44,10 +55,24 @@ require('bespoke');
 require('bespoke-convenient');
 ```
 
+## TODO
+
+- Move more shared functionality into this plugin.
+- Share more "internal" error handling, event firing functions and more by building an object based on `tag`, `pluginName` etcetera arguments from other plugins.
+
+
 ## Credits
 
-This plugin was built with [generator-bespokeplugin](https://github.com/markdalgleish/generator-bespokeplugin).
+[Mark Dalgleish](http://markdalgleish.com/) for [bespoke.js][bespoke.js] and related tools. This plugin was built with [generator-bespokeplugin](https://github.com/markdalgleish/generator-bespokeplugin).
+
+AJ Batac, [ajbatac on flickr](https://secure.flickr.com/photos/ajbatac/), for his photo [E-Mart Convenience Store](https://secure.flickr.com/photos/ajbatac/7139837787/) ([CC BY 2.0](https://creativecommons.org/licenses/by/2.0/)).
+
+
 
 ## License
 
-[MIT License](http://en.wikipedia.org/wiki/MIT_License)
+Copyright (c) 2013, [Joel Purra](http://joelpurra.com/) All rights reserved.
+
+When using bespoke-convenient, comply to the [MIT license](http://joelpurra.mit-license.org/2013). Please see the LICENSE file for details, and the [MIT License on Wikipedia](http://en.wikipedia.org/wiki/MIT_License).
+
+[bespoke.js]: https://github.com/markdalgleish/bespoke.js
