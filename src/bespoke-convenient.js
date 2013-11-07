@@ -33,13 +33,13 @@
 
             // TODO: create a second object bound to both this external object and the deck,
             // to avoid passing the deck parameter every time. (Which can be alleviated with simpler function binding though.)
-            internalFire = function(deck, eventName, innerEvent, index, customData) {
-                return deck.fire(eventInNamespace(eventName), deck.createEventData(eventNamespace, eventName, innerEvent, index, customData));
+            fire = function(deck, eventName, innerEvent, slide, customData) {
+                return deck.fire(eventInNamespace(eventName), deck.createEventData(eventNamespace, eventName, innerEvent, slide, customData));
             },
 
             init = function() {
                 external.generateErrorObject = generateErrorObject.bind(this);
-                external.internalFire = internalFire.bind(this);
+                external.fire = fire.bind(this);
             };
 
         init();
