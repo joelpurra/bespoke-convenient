@@ -6,7 +6,7 @@
     "bugs": "https://github.com/joelpurra/bespoke-convenient/issues",
     "author": {
         "name": "Joel Purra",
-        "url": "https://github.com/joelpurra"
+        "url": "http://joelpurra.com/"
     },
     "main": "./dist/bespoke-convenient.js",
     "repository": {
@@ -35,7 +35,8 @@
         "node": ">=0.8.0"
     },
     "licenses": [{
-        "type": "MIT"
+        "type": "MIT",
+        "url": "http://joelpurra.mit-license.org/2013"
     }],
     "keywords": [
         "bespoke.js-plugin"
