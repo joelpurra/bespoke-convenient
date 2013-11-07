@@ -15,7 +15,7 @@ Download the [production version][min] or the [development version][max], or use
 
 First, include both `bespoke.js` and `bespoke-convenient.js` in your page.
 
-Then, simply include the plugin when instantiating your presentation.
+Then, simply include the plugin when instantiating your presentation - and make sure to insert `convenient: true` before any other plugin that might use convenient.
 
 ```js
 bespoke.horizontal.from('article', {
@@ -26,11 +26,21 @@ bespoke.horizontal.from('article', {
 Since this is a plugin written for other bespoke plugin developers, have a look at the source files.
 
 ```js
-deck.firstIndex();
-deck.lastIndex();
-deck.first();
-deck.last();
-deck.createEventData();
+var cv = plugin.builder(pluginName);
+
+// cv.generateObject(message)
+// An error object with a prefixed error message.
+throw cv.generateErrorObject("Look, sometimes bad things happen, and there is nothing you can do about it, so why worry? -- Simba, The Lion King");
+
+// cv.fire(deck, eventName, innerEvent, slide, customData)
+// Fire an event on the deck, with plugin name etcetera filled in.
+// innerEvent: either a DOM/browser event or a bespoke event
+// slide: either the index of the affected slide, or the slide object itself
+var success = cv.fire(deck, "myevent", e, 123, { someExtraPluginData: "data value", somePluginStatus: 999 });
+
+// deck.createEventData(eventNamespace, eventName, innerEvent, slide, eventData)
+// Creates the event same object used by cv.fire(...).
+var eventData = deck.createEventData();
 ```
 
 
@@ -58,7 +68,6 @@ require('bespoke-convenient');
 ## TODO
 
 - Move more shared functionality into this plugin.
-- Share more "internal" error handling, event firing functions and more by building an object based on `tag`, `pluginName` etcetera arguments from other plugins.
 
 
 ## Credits
