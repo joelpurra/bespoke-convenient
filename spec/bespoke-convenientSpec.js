@@ -20,6 +20,33 @@
 
         beforeEach(createDeck);
 
+        describe("cv.builder", function() {
+            var cv,
+                somePluginName = "somePluginName",
+                someEventName = "someEventName",
+                someNamespacedEventName = somePluginName + "." + someEventName,
+                customMessage = "some custom message";
+
+            beforeEach(function() {
+                cv = bespoke.plugins.convenient.builder(somePluginName);
+            });
+
+            it("should fire events prefixed with the plugin name", function() {
+                var eventListener = jasmine.createSpy("eventListener"),
+                    off = deck.on(someNamespacedEventName, eventListener);
+                cv.fire(deck, someEventName);
+                off();
+                expect(eventListener).toHaveBeenCalled();
+            });
+
+            it("should create an error with a message that contains the plugin name and a custom message", function() {
+                var error = cv.generateErrorObject(customMessage);
+
+                expect(error.message).toContain(somePluginName);
+                expect(error.message).toContain(customMessage);
+            });
+        });
+
         describe("deck.createEventData", function() {
             var eventNamespace = "spec",
                 eventName = "createEventData";
