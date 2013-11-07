@@ -1,19 +1,9 @@
-/*global document:true, bespoke:true */
+/*global bespoke:true */
 
-(function(document, bespoke) {
+(function(bespoke) {
     "use strict";
 
-    var deck = bespoke.horizontal.from("article", {
+    bespoke.horizontal.from("article", {
         convenient: true
-    }),
-        goToFirstButton = document.getElementById("go-to-first"),
-        goToLastButton = document.getElementById("go-to-last");
-
-    goToFirstButton.onclick = function() {
-        deck.first();
-    };
-
-    goToLastButton.onclick = function() {
-        deck.last();
-    };
-}(document, bespoke));
+    });
+}(bespoke));
