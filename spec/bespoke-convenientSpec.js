@@ -1,6 +1,6 @@
-/*global document:true, jasmine:true, bespoke:true, describe:true, it:true, expect:true, beforeEach:true */
+/*global document:true, jasmine:true, bespoke:true, describe:true, it:true, expect:true, beforeEach:true, spyOn:true */
 
-(function(document, jasmine, bespoke, describe, it, expect, beforeEach) {
+(function(global, document, jasmine, bespoke, describe, it, expect, beforeEach, spyOn) {
     "use strict";
 
     describe("bespoke-convenient", function() {
@@ -16,58 +16,105 @@
                 deck = bespoke.from(parent, {
                     convenient: true
                 });
+            },
+
+            cv,
+
+            somePluginName = "somePluginName",
+
+            createConvenient = function() {
+                cv = bespoke.plugins.convenient.builder(somePluginName);
             };
 
-        beforeEach(createDeck);
-
         describe("cv.builder", function() {
-            var cv,
-                somePluginName = "somePluginName",
-                someEventName = "someEventName",
-                someNamespacedEventName = somePluginName + "." + someEventName,
-                customMessage = "some custom message";
+            beforeEach(createConvenient);
 
-            beforeEach(function() {
-                cv = bespoke.plugins.convenient.builder(somePluginName);
+            describe("cv.fire", function() {
+                beforeEach(createDeck);
+
+                var someEventName = "someEventName",
+                    someNamespacedEventName = somePluginName + "." + someEventName;
+
+                it("should fire events prefixed with the plugin name", function() {
+                    var eventListener = jasmine.createSpy("eventListener"),
+                        off = deck.on(someNamespacedEventName, eventListener);
+                    cv.fire(deck, someEventName);
+                    off();
+                    expect(eventListener).toHaveBeenCalled();
+                });
             });
 
-            it("should fire events prefixed with the plugin name", function() {
-                var eventListener = jasmine.createSpy("eventListener"),
-                    off = deck.on(someNamespacedEventName, eventListener);
-                cv.fire(deck, someEventName);
-                off();
-                expect(eventListener).toHaveBeenCalled();
+            describe("cv.generateErrorObject", function() {
+                it("should create an error with a message that contains the plugin name and a custom message", function() {
+                    var customMessage = "some custom message",
+                        error = cv.generateErrorObject(customMessage);
+
+                    expect(error.message).toContain(somePluginName);
+                    expect(error.message).toContain(customMessage);
+                });
             });
 
-            it("should create an error with a message that contains the plugin name and a custom message", function() {
-                var error = cv.generateErrorObject(customMessage);
+            describe("cv.copyArray", function() {
+                it("should copy an empty array", function() {
+                    var array = [],
+                        copy = cv.copyArray(array);
 
-                expect(error.message).toContain(somePluginName);
-                expect(error.message).toContain(customMessage);
+                    expect(array.length).toBe(copy.length);
+                });
+
+                it("should copy an array with elements", function() {
+                    var array = ["stuff"],
+                        copy = cv.copyArray(array);
+
+                    expect(array.length).toBe(copy.length);
+                    expect(array[0]).toBe(copy[0]);
+                });
+            });
+
+            describe("cv.log", function() {
+                var internalLogger = global.convenientOptions.logger,
+
+                    replaceLoggerWithSpy = function() {
+                        spyOn(internalLogger, "log");
+                    };
+
+                beforeEach(replaceLoggerWithSpy);
+
+                it("should log with tag prefix", function() {
+                    var tag = "bespoke." + somePluginName,
+                        somethingToLog = "something to log",
+                        otherThingToLog = 99999;
+                    cv.log(somethingToLog, otherThingToLog);
+                    expect(internalLogger.log).toHaveBeenCalledWith(tag, somethingToLog, otherThingToLog);
+                });
             });
         });
 
-        describe("deck.createEventData", function() {
-            var eventNamespace = "spec",
-                eventName = "createEventData";
+        describe("deck functionality", function() {
+            beforeEach(createDeck);
 
-            it("should have an index property when initalized with a slide object", function() {
-                var index = 3,
-                    slide = deck.slides[index],
-                    eventData = deck.createEventData(eventNamespace, eventName, null, slide);
+            describe("deck.createEventData", function() {
+                var eventNamespace = "spec",
+                    eventName = "createEventData";
 
-                expect(eventData.index).toBe(index);
-                expect(eventData.slide).toBe(slide);
-            });
+                it("should have an index property when initalized with a slide object", function() {
+                    var index = 3,
+                        slide = deck.slides[index],
+                        eventData = deck.createEventData(eventNamespace, eventName, null, slide);
 
-            it("should have a slide property when initalized with a slide index", function() {
-                var index = 3,
-                    slide = deck.slides[index],
-                    eventData = deck.createEventData(eventNamespace, eventName, null, index);
+                    expect(eventData.index).toBe(index);
+                    expect(eventData.slide).toBe(slide);
+                });
 
-                expect(eventData.index).toBe(index);
-                expect(eventData.slide).toBe(slide);
+                it("should have a slide property when initalized with a slide index", function() {
+                    var index = 3,
+                        slide = deck.slides[index],
+                        eventData = deck.createEventData(eventNamespace, eventName, null, index);
+
+                    expect(eventData.index).toBe(index);
+                    expect(eventData.slide).toBe(slide);
+                });
             });
         });
     });
-}(document, jasmine, bespoke, describe, it, expect, beforeEach));
+}(this, document, jasmine, bespoke, describe, it, expect, beforeEach, spyOn));

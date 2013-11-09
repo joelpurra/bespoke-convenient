@@ -1,9 +1,29 @@
-/*global Math:true, bespoke:true */
+/*global console, Math:true, bespoke:true */
 
-(function(Math, bespoke, ns, pluginName, undefined) {
+(function(global, console, Math, bespoke, ns, pluginName, undefined) {
     "use strict";
 
     var cv,
+
+        // The defaults object is passed as a reference, and can be modified by global.convenientInit
+        defaults = {
+            logger: {
+                log: function() {
+                    // Workaround for phantom-polyfill.js problems binding console.log (window.console.log)
+                    console.log.apply(console, arguments);
+                }
+            }
+        },
+
+        initOptions = function() {
+            var merged = {};
+
+            // Only merge known options
+            merged.logger = {};
+            merged.logger.log = global.convenientOptions && global.convenientOptions.logger && global.convenientOptions.logger.log || defaults.logger.log;
+
+            global.convenientOptions = merged;
+        },
 
         plugin = function self(deck) {
             deck.createEventData = self.createEventData.bind(deck);
@@ -13,6 +33,10 @@
             // http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric
             // From http://stackoverflow.com/a/1830844
             return !isNaN(parseFloat(n)) && isFinite(n);
+        },
+
+        init = function() {
+            initOptions();
         };
 
     // For plugins themselves
@@ -37,9 +61,22 @@
                 return deck.fire(eventInNamespace(eventName), deck.createEventData(eventNamespace, eventName, innerEvent, slide, customData));
             },
 
+            copyArray = function(arr) {
+                return [].slice.call(arr, 0);
+            },
+
+            log = function() {
+                var prefixes = [tag];
+
+                // global.convenientOptions.logger.log is dynamic, so can't bind directly to it
+                global.convenientOptions.logger.log.apply(global.convenientOptions.logger.log, prefixes.concat(copyArray(arguments)));
+            },
+
             init = function() {
                 external.generateErrorObject = generateErrorObject.bind(this);
                 external.fire = fire.bind(this);
+                external.copyArray = copyArray.bind(this);
+                external.log = log.bind(this);
             };
 
         init();
@@ -76,5 +113,7 @@
         throw cv.generateErrorObject("The " + pluginName + " plugin has already been loaded.");
     }
 
+    init();
+
     ns[pluginName] = plugin;
-}(Math, bespoke, bespoke.plugins, "convenient"));
+}(this, console, Math, bespoke, bespoke.plugins, "convenient"));
