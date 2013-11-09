@@ -26,7 +26,9 @@ bespoke.horizontal.from('article', {
 Since this is a plugin written for other bespoke plugin developers, have a look at the source files.
 
 ```js
-var cv = plugin.builder(pluginName);
+// bespoke.plugins.convenient.builder(pluginName)
+// Convenient plugin level functions - create the variable cv in your plugin.
+var cv = bespoke.plugins.convenient.builder("myplugin");
 
 // cv.generateObject(message)
 // An error object with a prefixed error message.
@@ -37,6 +39,14 @@ throw cv.generateErrorObject("Look, sometimes bad things happen, and there is no
 // innerEvent: either a DOM/browser event or a bespoke event
 // slide: either the index of the affected slide, or the slide object itself
 var success = cv.fire(deck, "myevent", e, 123, { someExtraPluginData: "data value", somePluginStatus: 999 });
+
+// cv.copyArray(array)
+// Mostly useful for function arguments
+var args = cv.copyArray(arguments);
+
+// cv.log([object], ...)
+// Log a prefixed log message, by default to the developer console
+cv.log("Something", "happened", 1974);
 
 // deck.createEventData(eventNamespace, eventName, innerEvent, slide, eventData)
 // Creates the event same object used by cv.fire(...).
