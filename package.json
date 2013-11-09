@@ -1,6 +1,6 @@
 {
     "name": "bespoke-convenient",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Convenient extension methods for building Bespoke.js plugins",
     "homepage": "https://github.com/joelpurra/bespoke-convenient",
     "bugs": "https://github.com/joelpurra/bespoke-convenient/issues",

@@ -1,6 +1,6 @@
 {
   "name": "bespoke-convenient",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "dependencies": {
     "bespoke.js": ">=0.3.0"
   }

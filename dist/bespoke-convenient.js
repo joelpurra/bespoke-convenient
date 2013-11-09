@@ -1,5 +1,5 @@
 /*!
- * bespoke-convenient v0.2.0
+ * bespoke-convenient v0.2.1
  * https://github.com/joelpurra/bespoke-convenient
  *
  * Copyright 2013, Joel Purra
