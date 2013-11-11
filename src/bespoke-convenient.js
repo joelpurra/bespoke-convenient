@@ -25,8 +25,27 @@
             global.convenientOptions = merged;
         },
 
+        decksStorages = [],
+
+        storeDeck = function(deck) {
+            decksStorages.push({
+                deck: deck,
+                storage: {}
+            });
+        },
+
         plugin = function self(deck) {
-            deck.createEventData = self.createEventData.bind(deck);
+            var registerDeckExtensions = function() {
+                deck.createEventData = self.createEventData.bind(deck);
+                deck.getStorage = self.getDeckStorage.bind(this, deck);
+            },
+
+                init = function() {
+                    storeDeck(deck);
+                    registerDeckExtensions();
+                };
+
+            init();
         },
 
         isNumber = function(n) {
@@ -40,7 +59,7 @@
         };
 
     // For plugins themselves
-    plugin.builder = function self(pluginName) {
+    plugin.builder = function(pluginName) {
         var external = {},
 
             tag = "bespoke." + pluginName,
@@ -77,11 +96,43 @@
                 external.fire = fire.bind(this);
                 external.copyArray = copyArray.bind(this);
                 external.log = log.bind(this);
+                external.getStorage = plugin.getDeckPluginStorage.bind(this, pluginName);
             };
 
         init();
 
         return external;
+    };
+
+    plugin.getDeckStorage = function(deck) {
+        if (deck === undefined) {
+            throw cv.generateErrorObject("deck must be defined.");
+        }
+
+        var storage = null;
+
+        decksStorages.forEach(function(deckStorage) {
+            if (deckStorage.deck === deck) {
+                storage = deckStorage.storage;
+                return false;
+            }
+        });
+
+        return storage;
+    };
+
+    plugin.getDeckPluginStorage = function(pluginName, deck) {
+        if (pluginName === undefined) {
+            throw cv.generateErrorObject("pluginName must be defined.");
+        }
+
+        var storage = plugin.getDeckStorage(deck);
+
+        if (storage[pluginName] === undefined) {
+            storage[pluginName] = {};
+        }
+
+        return storage[pluginName];
     };
 
     // Plugin functions expect to be executed in a deck context
