@@ -95,3 +95,7 @@ Copyright (c) 2013, [Joel Purra](http://joelpurra.com/) All rights reserved.
 When using bespoke-convenient, comply to the [MIT license](http://joelpurra.mit-license.org/2013). Please see the LICENSE file for details, and the [MIT License on Wikipedia](http://en.wikipedia.org/wiki/MIT_License).
 
 [bespoke.js]: https://github.com/markdalgleish/bespoke.js
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/joelpurra/bespoke-convenient/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
