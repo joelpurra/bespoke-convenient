@@ -13,9 +13,7 @@
                     parent.appendChild(document.createElement("section"));
                 }
 
-                deck = bespoke.from(parent, {
-                    convenient: true
-                });
+                deck = bespoke.from(parent);
             },
 
             cv,
@@ -28,6 +26,31 @@
 
         describe("cv.builder", function() {
             beforeEach(createConvenient);
+
+            describe("cv.createEventData", function() {
+                beforeEach(createDeck);
+
+                var eventNamespace = "spec",
+                    eventName = "createEventData";
+
+                it("should have an index property when initalized with a slide object", function() {
+                    var index = 3,
+                        slide = deck.slides[index],
+                        eventData = cv.createEventData(deck, eventNamespace, eventName, null, slide);
+
+                    expect(eventData.index).toBe(index);
+                    expect(eventData.slide).toBe(slide);
+                });
+
+                it("should have a slide property when initalized with a slide index", function() {
+                    var index = 3,
+                        slide = deck.slides[index],
+                        eventData = cv.createEventData(deck, eventNamespace, eventName, null, index);
+
+                    expect(eventData.index).toBe(index);
+                    expect(eventData.slide).toBe(slide);
+                });
+            });
 
             describe("cv.fire", function() {
                 beforeEach(createDeck);
@@ -86,33 +109,6 @@
                         otherThingToLog = 99999;
                     cv.log(somethingToLog, otherThingToLog);
                     expect(internalLogger.log).toHaveBeenCalledWith(tag, somethingToLog, otherThingToLog);
-                });
-            });
-        });
-
-        describe("deck functionality", function() {
-            beforeEach(createDeck);
-
-            describe("deck.createEventData", function() {
-                var eventNamespace = "spec",
-                    eventName = "createEventData";
-
-                it("should have an index property when initalized with a slide object", function() {
-                    var index = 3,
-                        slide = deck.slides[index],
-                        eventData = deck.createEventData(eventNamespace, eventName, null, slide);
-
-                    expect(eventData.index).toBe(index);
-                    expect(eventData.slide).toBe(slide);
-                });
-
-                it("should have a slide property when initalized with a slide index", function() {
-                    var index = 3,
-                        slide = deck.slides[index],
-                        eventData = deck.createEventData(eventNamespace, eventName, null, index);
-
-                    expect(eventData.index).toBe(index);
-                    expect(eventData.slide).toBe(slide);
                 });
             });
         });

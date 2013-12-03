@@ -13,15 +13,7 @@ Download the [production version][min] or the [development version][max], or use
 
 ## Usage
 
-First, include both `bespoke.js` and `bespoke-convenient.js` in your page.
-
-Then, simply include the plugin when instantiating your presentation - and make sure to insert `convenient: true` before any other plugin that might use convenient.
-
-```js
-bespoke.horizontal.from('article', {
-  convenient: true
-});
-```
+Include both `bespoke.js` and `bespoke-convenient.js` in your page.
 
 Since this is a plugin written for other bespoke plugin developers, have a look at the source files.
 
@@ -40,6 +32,10 @@ throw cv.generateErrorObject("Look, sometimes bad things happen, and there is no
 // slide: either the index of the affected slide, or the slide object itself
 var success = cv.fire(deck, "myevent", e, 123, { someExtraPluginData: "data value", somePluginStatus: 999 });
 
+// cv.createEventData(deck, eventNamespace, eventName, innerEvent, slide, eventData)
+// Creates the event same object used by cv.fire(...).
+var eventData = cv.createEventData();
+
 // cv.copyArray(array)
 // Mostly useful for function arguments
 var args = cv.copyArray(arguments);
@@ -47,10 +43,6 @@ var args = cv.copyArray(arguments);
 // cv.log([object], ...)
 // Log a prefixed log message, by default to the developer console
 cv.log("Something", "happened", 1974);
-
-// deck.createEventData(eventNamespace, eventName, innerEvent, slide, eventData)
-// Creates the event same object used by cv.fire(...).
-var eventData = deck.createEventData();
 ```
 
 
