@@ -18,13 +18,13 @@
 
             cv,
 
-            somePluginName = "somePluginName",
+            somePluginName = "somePluginName";
 
-            createConvenient = function() {
+        describe("cv.builder simple options", function() {
+            var createConvenient = function() {
                 cv = bespoke.plugins.convenient.builder(somePluginName);
             };
 
-        describe("cv.builder", function() {
             beforeEach(createConvenient);
 
             describe("plugin load protection", function() {
@@ -122,6 +122,67 @@
                         otherThingToLog = 99999;
                     cv.log(somethingToLog, otherThingToLog);
                     expect(internalLogger.log).toHaveBeenCalledWith(tag, somethingToLog, otherThingToLog);
+                });
+            });
+        });
+
+        describe("cv.builder advanced options", function() {
+            describe("options.pluginName", function() {
+                var createConvenient = function() {
+                    cv = bespoke.plugins.convenient.builder({
+                        pluginName: somePluginName
+                    });
+                };
+
+                beforeEach(createConvenient);
+
+                describe("cv.generateErrorObject", function() {
+                    it("should create an error with a message that contains the plugin name", function() {
+                        var customMessage = "",
+                            error = cv.generateErrorObject(customMessage);
+
+                        expect(error.message).toContain(somePluginName);
+                    });
+                });
+            });
+
+            describe("options.dependencies", function() {
+                var someOtherPlugin = "otherPlugin";
+
+                it("should allow undefined dependencies", function() {
+                    cv = bespoke.plugins.convenient.builder({
+                        pluginName: somePluginName,
+                        dependencies: undefined
+                    });
+                });
+
+                it("should allow empty dependencies", function() {
+                    cv = bespoke.plugins.convenient.builder({
+                        pluginName: somePluginName,
+                        dependencies: []
+                    });
+                });
+
+                it("should allow defined dependencies", function() {
+                    // Fake other plugin
+                    bespoke.plugins[someOtherPlugin] = {};
+
+                    cv = bespoke.plugins.convenient.builder({
+                        pluginName: somePluginName,
+                        dependencies: [someOtherPlugin]
+                    });
+
+                    // Delete fake other plugin
+                    delete bespoke.plugins[someOtherPlugin];
+                });
+
+                it("should not allow undefined dependencies", function() {
+                    expect(function() {
+                        cv = bespoke.plugins.convenient.builder({
+                            pluginName: somePluginName,
+                            dependencies: [someOtherPlugin]
+                        });
+                    }).toThrow();
                 });
             });
         });

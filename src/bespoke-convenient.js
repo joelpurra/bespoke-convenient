@@ -38,16 +38,26 @@
         };
 
     // For plugins themselves
-    plugin.builder = function self(pluginName) {
+    plugin.builder = function self(options) {
+        if (typeof options === "string") {
+            options = {
+                pluginName: options
+            };
+        }
+
+        if (typeof options.pluginName !== "string") {
+            throw cv.generateErrorObject("The plugin name was not properly defined.");
+        }
+
         var external = {},
 
-            tag = "bespoke." + pluginName,
+            tag = "bespoke." + options.pluginName,
 
             generateErrorObject = function(message) {
                 return new Error(tag + ": " + message);
             },
 
-            eventNamespace = pluginName,
+            eventNamespace = options.pluginName,
 
             eventInNamespace = function(eventName) {
                 return eventNamespace + "." + eventName;
@@ -94,13 +104,24 @@
             },
 
             checkIfPluginWasAlreadyLoaded = function() {
-                if (ns[pluginName] !== undefined) {
-                    throw cv.generateErrorObject("The " + pluginName + " plugin has already been loaded, can't load it twice.");
+                if (ns[options.pluginName] !== undefined) {
+                    throw cv.generateErrorObject("The " + options.pluginName + " plugin has already been loaded, can't load it twice.");
+                }
+            },
+
+            checkIfDependenciesHaveBeenLoaded = function() {
+                if (Array.isArray(options.dependencies)) {
+                    options.dependencies.forEach(function(dependency) {
+                        if (ns[dependency] === undefined) {
+                            throw cv.generateErrorObject("The " + options.pluginName + " plugin requires the " + dependency + " plugin to be loaded.");
+                        }
+                    });
                 }
             },
 
             init = function() {
                 checkIfPluginWasAlreadyLoaded();
+                checkIfDependenciesHaveBeenLoaded();
 
                 external.createEventData = createEventData.bind(this);
                 external.generateErrorObject = generateErrorObject.bind(this);
