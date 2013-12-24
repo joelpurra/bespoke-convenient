@@ -25,7 +25,19 @@
             global.convenientOptions = merged;
         },
 
-        plugin = function() {},
+        decksStorages = [],
+
+        storeDeck = function(deck) {
+            decksStorages.push({
+                deck: deck,
+                storage: {}
+            });
+        },
+
+        plugin = function(deck) {
+            // TODO: move storing of the deck to a function called on deck activation by a plugin dependent on convenient?
+            storeDeck(deck);
+        },
 
         isNumber = function(n) {
             // http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric
@@ -128,11 +140,66 @@
                 external.fire = fire.bind(this);
                 external.copyArray = copyArray.bind(this);
                 external.log = log.bind(this);
+                external.getStorage = plugin.getDeckPluginStorage.bind(this, pluginName);
             };
 
         init();
 
         return external;
+    };
+
+    plugin.getDeckStorage = function(deck) {
+        if (deck === undefined) {
+            throw cv.generateErrorObject("deck must be defined.");
+        }
+
+        var storage = null;
+
+        decksStorages.forEach(function(deckStorage) {
+            if (deckStorage.deck === deck) {
+                storage = deckStorage.storage;
+                return false;
+            }
+        });
+
+        return storage;
+    };
+
+    plugin.getDeckPluginStorage = function(pluginName, deck) {
+        if (pluginName === undefined) {
+            throw cv.generateErrorObject("pluginName must be defined.");
+        }
+
+        var storage = plugin.getDeckStorage(deck);
+
+        if (storage[pluginName] === undefined) {
+            storage[pluginName] = {};
+        }
+
+        return storage[pluginName];
+    };
+
+    // Plugin functions expect to be executed in a deck context
+    // Mimicing, and extending,the internal createEventData bespoke uses
+    plugin.createEventData = function(eventNamespace, eventName, innerEvent, slide, eventData) {
+        eventData = eventData || {};
+
+        eventData.eventNamespace = eventNamespace || null;
+
+        eventData.eventName = eventName || null;
+
+        // Can be either a DOM/browser event or a bespoke event
+        eventData.innerEvent = innerEvent || null;
+
+        if (isNumber(slide)) {
+            eventData.index = slide;
+            eventData.slide = this.slides[slide];
+        } else {
+            eventData.index = this.slides.indexOf(slide);
+            eventData.slide = slide;
+        }
+
+        return eventData;
     };
 
     cv = plugin.builder(pluginName);
