@@ -25,9 +25,7 @@
             global.convenientOptions = merged;
         },
 
-        plugin = function self(deck) {
-            deck.createEventData = self.createEventData.bind(deck);
-        },
+        plugin = function() {},
 
         isNumber = function(n) {
             // http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric
@@ -55,10 +53,33 @@
                 return eventNamespace + "." + eventName;
             },
 
+            // Plugin functions expect to be executed in a deck context
+            // Mimicing, and extending,the internal createEventData bespoke uses
+            createEventData = function(deck, eventNamespace, eventName, innerEvent, slide, eventData) {
+                eventData = eventData || {};
+
+                eventData.eventNamespace = eventNamespace || null;
+
+                eventData.eventName = eventName || null;
+
+                // Can be either a DOM/browser event or a bespoke event
+                eventData.innerEvent = innerEvent || null;
+
+                if (isNumber(slide)) {
+                    eventData.index = slide;
+                    eventData.slide = deck.slides[slide];
+                } else {
+                    eventData.index = deck.slides.indexOf(slide);
+                    eventData.slide = slide;
+                }
+
+                return eventData;
+            },
+
             // TODO: create a second object bound to both this external object and the deck,
             // to avoid passing the deck parameter every time. (Which can be alleviated with simpler function binding though.)
             fire = function(deck, eventName, innerEvent, slide, customData) {
-                return deck.fire(eventInNamespace(eventName), deck.createEventData(eventNamespace, eventName, innerEvent, slide, customData));
+                return deck.fire(eventInNamespace(eventName), createEventData(deck, eventNamespace, eventName, innerEvent, slide, customData));
             },
 
             copyArray = function(arr) {
@@ -73,6 +94,7 @@
             },
 
             init = function() {
+                external.createEventData = createEventData.bind(this);
                 external.generateErrorObject = generateErrorObject.bind(this);
                 external.fire = fire.bind(this);
                 external.copyArray = copyArray.bind(this);
@@ -82,29 +104,6 @@
         init();
 
         return external;
-    };
-
-    // Plugin functions expect to be executed in a deck context
-    // Mimicing, and extending,the internal createEventData bespoke uses
-    plugin.createEventData = function(eventNamespace, eventName, innerEvent, slide, eventData) {
-        eventData = eventData || {};
-
-        eventData.eventNamespace = eventNamespace || null;
-
-        eventData.eventName = eventName || null;
-
-        // Can be either a DOM/browser event or a bespoke event
-        eventData.innerEvent = innerEvent || null;
-
-        if (isNumber(slide)) {
-            eventData.index = slide;
-            eventData.slide = this.slides[slide];
-        } else {
-            eventData.index = this.slides.indexOf(slide);
-            eventData.slide = slide;
-        }
-
-        return eventData;
     };
 
     cv = plugin.builder(pluginName);
