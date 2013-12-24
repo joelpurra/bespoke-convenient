@@ -124,6 +124,45 @@
                     expect(internalLogger.log).toHaveBeenCalledWith(tag, somethingToLog, otherThingToLog);
                 });
             });
+
+            describe("cv.getStorage", function() {
+                beforeEach(createDeck);
+
+                it("should not work for unactivated decks", function() {
+                    expect(function() {
+                        cv.getStorage(deck);
+                    }).toThrow();
+                });
+
+                it("should be empty to start with", function() {
+                    var storage;
+
+                    // Simulate a plugin activating the deck
+                    cv.activateDeck(deck);
+
+                    storage = cv.getStorage(deck);
+
+                    expect(storage).toEqual({});
+                });
+
+                it("should be able to store, then retrieve, data", function() {
+                    var storage1,
+                        storage2 = null,
+                        data = {
+                            things: "asdf"
+                        };
+
+                    // Simulate a plugin activating the deck
+                    cv.activateDeck(deck);
+
+                    storage1 = cv.getStorage(deck);
+
+                    expect(storage1.whatever).toBe(undefined);
+                    storage1.whatever = data;
+                    storage2 = cv.getStorage(deck);
+                    expect(storage2.whatever).toBe(data);
+                });
+            });
         });
 
         describe("cv.builder advanced options", function() {
