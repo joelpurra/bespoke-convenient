@@ -27,6 +27,19 @@
         describe("cv.builder", function() {
             beforeEach(createConvenient);
 
+            describe("plugin load protection", function() {
+                it("should not be possible to load plugin twice", function() {
+                    // Simulating loading the plugin
+                    bespoke.plugins[somePluginName] = {};
+
+                    // Create another convenient object, based on the same plugin name
+                    expect(createConvenient).toThrow();
+
+                    // Simulate not having loaded the plugin at all
+                    delete bespoke.plugins[somePluginName];
+                });
+            });
+
             describe("cv.createEventData", function() {
                 beforeEach(createDeck);
 
