@@ -93,7 +93,15 @@
                 global.convenientOptions.logger.log.apply(global.convenientOptions.logger.log, prefixes.concat(copyArray(arguments)));
             },
 
+            checkIfPluginWasAlreadyLoaded = function() {
+                if (ns[pluginName] !== undefined) {
+                    throw cv.generateErrorObject("The " + pluginName + " plugin has already been loaded, can't load it twice.");
+                }
+            },
+
             init = function() {
+                checkIfPluginWasAlreadyLoaded();
+
                 external.createEventData = createEventData.bind(this);
                 external.generateErrorObject = generateErrorObject.bind(this);
                 external.fire = fire.bind(this);
@@ -107,10 +115,6 @@
     };
 
     cv = plugin.builder(pluginName);
-
-    if (ns[pluginName] !== undefined) {
-        throw cv.generateErrorObject("The " + pluginName + " plugin has already been loaded.");
-    }
 
     init();
 
