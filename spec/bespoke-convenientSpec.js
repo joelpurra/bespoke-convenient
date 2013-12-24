@@ -18,13 +18,13 @@
 
             cv,
 
-            somePluginName = "somePluginName",
+            somePluginName = "somePluginName";
 
-            createConvenient = function() {
+        describe("cv.builder simple options", function() {
+            var createConvenient = function() {
                 cv = bespoke.plugins.convenient.builder(somePluginName);
             };
 
-        describe("cv.builder", function() {
             beforeEach(createConvenient);
 
             describe("plugin load protection", function() {
@@ -122,6 +122,27 @@
                         otherThingToLog = 99999;
                     cv.log(somethingToLog, otherThingToLog);
                     expect(internalLogger.log).toHaveBeenCalledWith(tag, somethingToLog, otherThingToLog);
+                });
+            });
+        });
+
+        describe("cv.builder advanced options", function() {
+            describe("options.pluginName", function() {
+                var createConvenient = function() {
+                    cv = bespoke.plugins.convenient.builder({
+                        pluginName: somePluginName
+                    });
+                };
+
+                beforeEach(createConvenient);
+
+                describe("cv.generateErrorObject", function() {
+                    it("should create an error with a message that contains the plugin name", function() {
+                        var customMessage = "",
+                            error = cv.generateErrorObject(customMessage);
+
+                        expect(error.message).toContain(somePluginName);
+                    });
                 });
             });
         });
