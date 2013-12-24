@@ -28,16 +28,17 @@
         decksStorages = [],
 
         storeDeck = function(deck) {
-            decksStorages.push({
-                deck: deck,
-                storage: {}
-            });
+            if (!decksStorages.some(function(deckStorage) {
+                return deckStorage.deck === deck;
+            })) {
+                decksStorages.push({
+                    deck: deck,
+                    storage: {}
+                });
+            }
         },
 
-        plugin = function(deck) {
-            // TODO: move storing of the deck to a function called on deck activation by a plugin dependent on convenient?
-            storeDeck(deck);
-        },
+        plugin = function() {},
 
         isNumber = function(n) {
             // http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric
@@ -131,6 +132,10 @@
                 }
             },
 
+            activateDeck = function(deck) {
+                storeDeck(deck);
+            },
+
             init = function() {
                 checkIfPluginWasAlreadyLoaded();
                 checkIfDependenciesHaveBeenLoaded();
@@ -140,6 +145,7 @@
                 external.fire = fire.bind(this);
                 external.copyArray = copyArray.bind(this);
                 external.log = log.bind(this);
+                external.activateDeck = activateDeck.bind(this);
                 external.getStorage = plugin.getDeckPluginStorage.bind(this, pluginName);
             };
 
