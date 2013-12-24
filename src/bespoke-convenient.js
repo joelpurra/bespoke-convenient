@@ -109,8 +109,19 @@
                 }
             },
 
+            checkIfDependenciesHaveBeenLoaded = function() {
+                if (Array.isArray(options.dependencies)) {
+                    options.dependencies.forEach(function(dependency) {
+                        if (ns[dependency] === undefined) {
+                            throw cv.generateErrorObject("The " + options.pluginName + " plugin requires the " + dependency + " plugin to be loaded.");
+                        }
+                    });
+                }
+            },
+
             init = function() {
                 checkIfPluginWasAlreadyLoaded();
+                checkIfDependenciesHaveBeenLoaded();
 
                 external.createEventData = createEventData.bind(this);
                 external.generateErrorObject = generateErrorObject.bind(this);

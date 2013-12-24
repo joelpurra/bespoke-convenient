@@ -145,6 +145,46 @@
                     });
                 });
             });
+
+            describe("options.dependencies", function() {
+                var someOtherPlugin = "otherPlugin";
+
+                it("should allow undefined dependencies", function() {
+                    cv = bespoke.plugins.convenient.builder({
+                        pluginName: somePluginName,
+                        dependencies: undefined
+                    });
+                });
+
+                it("should allow empty dependencies", function() {
+                    cv = bespoke.plugins.convenient.builder({
+                        pluginName: somePluginName,
+                        dependencies: []
+                    });
+                });
+
+                it("should allow defined dependencies", function() {
+                    // Fake other plugin
+                    bespoke.plugins[someOtherPlugin] = {};
+
+                    cv = bespoke.plugins.convenient.builder({
+                        pluginName: somePluginName,
+                        dependencies: [someOtherPlugin]
+                    });
+
+                    // Delete fake other plugin
+                    delete bespoke.plugins[someOtherPlugin];
+                });
+
+                it("should not allow undefined dependencies", function() {
+                    expect(function() {
+                        cv = bespoke.plugins.convenient.builder({
+                            pluginName: somePluginName,
+                            dependencies: [someOtherPlugin]
+                        });
+                    }).toThrow();
+                });
+            });
         });
     });
 }(this, document, jasmine, bespoke, describe, it, expect, beforeEach, spyOn));
