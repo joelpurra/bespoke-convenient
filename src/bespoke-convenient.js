@@ -62,6 +62,8 @@
             throw cv.generateErrorObject("The plugin name was not properly defined.");
         }
 
+        options.dependencies = options.dependencies || [];
+
         var external = {},
 
             tag = "bespoke." + options.pluginName,
@@ -123,13 +125,11 @@
             },
 
             checkIfDependenciesHaveBeenLoaded = function() {
-                if (Array.isArray(options.dependencies)) {
-                    options.dependencies.forEach(function(dependency) {
-                        if (ns[dependency] === undefined) {
-                            throw cv.generateErrorObject("The " + options.pluginName + " plugin requires the " + dependency + " plugin to be loaded.");
-                        }
-                    });
-                }
+                options.dependencies.forEach(function(dependency) {
+                    if (ns[dependency] === undefined) {
+                        throw cv.generateErrorObject("The " + options.pluginName + " plugin requires the " + dependency + " plugin to be loaded.");
+                    }
+                });
             },
 
             activateDeck = function(deck) {
