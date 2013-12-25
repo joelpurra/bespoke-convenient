@@ -146,7 +146,7 @@
                 external.copyArray = copyArray.bind(this);
                 external.log = log.bind(this);
                 external.activateDeck = activateDeck.bind(this);
-                external.getStorage = plugin.getDeckPluginStorage.bind(this, pluginName);
+                external.getStorage = plugin.getDeckPluginStorage.bind(this, options.pluginName);
             };
 
         init();
