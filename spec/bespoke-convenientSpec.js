@@ -18,7 +18,11 @@
 
             cv,
 
-            somePluginName = "somePluginName";
+            somePluginName = "somePluginName",
+
+            noop = function() {},
+
+            emptyPluginMethod = noop;
 
         describe("cv.builder simple options", function() {
             var createConvenient = function() {
@@ -30,7 +34,7 @@
             describe("plugin load protection", function() {
                 it("should not be possible to load plugin twice", function() {
                     // Simulating loading the plugin
-                    bespoke.plugins[somePluginName] = {};
+                    bespoke.plugins[somePluginName] = emptyPluginMethod;
 
                     // Create another convenient object, based on the same plugin name
                     expect(createConvenient).toThrow();
@@ -137,12 +141,18 @@
                 it("should be empty to start with", function() {
                     var storage;
 
+                    // Fake plugin
+                    bespoke.plugins[somePluginName] = emptyPluginMethod;
+
                     // Simulate a plugin activating the deck
                     cv.activateDeck(deck);
 
                     storage = cv.getStorage(deck);
 
                     expect(storage).toEqual({});
+
+                    // Delete fake plugin
+                    delete bespoke.plugins[somePluginName];
                 });
 
                 it("should be able to store, then retrieve, data", function() {
@@ -151,6 +161,9 @@
                         data = {
                             things: "asdf"
                         };
+
+                    // Fake plugin
+                    bespoke.plugins[somePluginName] = emptyPluginMethod;
 
                     // Simulate a plugin activating the deck
                     cv.activateDeck(deck);
@@ -161,6 +174,9 @@
                     storage1.whatever = data;
                     storage2 = cv.getStorage(deck);
                     expect(storage2.whatever).toBe(data);
+
+                    // Delete fake plugin
+                    delete bespoke.plugins[somePluginName];
                 });
             });
         });
@@ -186,42 +202,151 @@
             });
 
             describe("options.dependencies", function() {
-                var someOtherPlugin = "otherPlugin";
+                var someOtherPlugin = "someOtherPlugin";
 
-                it("should allow undefined dependencies", function() {
-                    cv = bespoke.plugins.convenient.builder({
-                        pluginName: somePluginName,
-                        dependencies: undefined
-                    });
-                });
-
-                it("should allow empty dependencies", function() {
-                    cv = bespoke.plugins.convenient.builder({
-                        pluginName: somePluginName,
-                        dependencies: []
-                    });
-                });
-
-                it("should allow defined dependencies", function() {
-                    // Fake other plugin
-                    bespoke.plugins[someOtherPlugin] = {};
-
-                    cv = bespoke.plugins.convenient.builder({
-                        pluginName: somePluginName,
-                        dependencies: [someOtherPlugin]
+                describe("at load", function() {
+                    it("should allow undefined dependencies", function() {
+                        cv = bespoke.plugins.convenient.builder({
+                            pluginName: somePluginName,
+                            dependencies: undefined
+                        });
                     });
 
-                    // Delete fake other plugin
-                    delete bespoke.plugins[someOtherPlugin];
-                });
+                    it("should allow empty dependencies", function() {
+                        cv = bespoke.plugins.convenient.builder({
+                            pluginName: somePluginName,
+                            dependencies: []
+                        });
+                    });
 
-                it("should not allow undefined dependencies", function() {
-                    expect(function() {
+                    it("should allow defined dependencies", function() {
+                        // Fake other plugin
+                        bespoke.plugins[someOtherPlugin] = emptyPluginMethod;
+
                         cv = bespoke.plugins.convenient.builder({
                             pluginName: somePluginName,
                             dependencies: [someOtherPlugin]
                         });
-                    }).toThrow();
+
+                        // Delete fake other plugin
+                        delete bespoke.plugins[someOtherPlugin];
+                    });
+
+                    it("should not allow undefined dependencies", function() {
+                        expect(function() {
+                            cv = bespoke.plugins.convenient.builder({
+                                pluginName: somePluginName,
+                                dependencies: [someOtherPlugin]
+                            });
+                        }).toThrow();
+                    });
+                });
+
+                describe("cv.activateDeck", function() {
+                    beforeEach(createDeck);
+
+                    it("should activate a defined dependency", function() {
+                        var otherPluginMethod = jasmine.createSpy("otherPluginMethod");
+
+                        // Fake other plugin
+                        bespoke.plugins[someOtherPlugin] = otherPluginMethod;
+
+                        cv = bespoke.plugins.convenient.builder({
+                            pluginName: somePluginName,
+                            dependencies: [someOtherPlugin]
+                        });
+
+                        // Fake plugin
+                        bespoke.plugins[somePluginName] = emptyPluginMethod;
+
+                        // Simulate a plugin activating the deck
+                        cv.activateDeck(deck);
+
+                        expect(otherPluginMethod).toHaveBeenCalledWith(deck, true);
+                        expect(otherPluginMethod.callCount).toEqual(1);
+
+                        // Delete fake plugin
+                        delete bespoke.plugins[somePluginName];
+
+                        // Delete fake other plugin
+                        delete bespoke.plugins[someOtherPlugin];
+                    });
+
+                    it("should activate two defined dependencies", function() {
+                        var someOtherPlugin2 = "someOtherPlugin2",
+                            otherPluginMethod = jasmine.createSpy("otherPluginMethod"),
+                            otherPluginMethod2 = jasmine.createSpy("otherPluginMethod2");
+
+                        // Fake other plugins, but don't tell convenient about them
+                        bespoke.plugins[someOtherPlugin] = otherPluginMethod;
+                        bespoke.plugins[someOtherPlugin2] = otherPluginMethod2;
+
+                        cv = bespoke.plugins.convenient.builder({
+                            pluginName: somePluginName,
+                            dependencies: [someOtherPlugin, someOtherPlugin2]
+                        });
+
+                        // Fake plugin
+                        bespoke.plugins[somePluginName] = emptyPluginMethod;
+
+                        // Simulate a plugin activating the deck
+                        cv.activateDeck(deck);
+
+                        expect(otherPluginMethod).toHaveBeenCalledWith(deck, true);
+                        expect(otherPluginMethod.callCount).toEqual(1);
+
+                        expect(otherPluginMethod2).toHaveBeenCalledWith(deck, true);
+                        expect(otherPluginMethod2.callCount).toEqual(1);
+
+                        // Delete fake plugin
+                        delete bespoke.plugins[somePluginName];
+
+                        // Delete fake other plugins
+                        delete bespoke.plugins[someOtherPlugin];
+                        delete bespoke.plugins[someOtherPlugin2];
+                    });
+
+                    it("should activate two defined dependencies in hierarchy", function() {
+                        var someOtherPlugin2 = "someOtherPlugin2",
+                            otherPluginMethod = jasmine.createSpy("otherPluginMethod"),
+                            otherPluginMethod2 = jasmine.createSpy("otherPluginMethod2"),
+                            cv1;
+
+                        // Fake other plugin 2, but don't tell convenient about it
+                        bespoke.plugins[someOtherPlugin2] = otherPluginMethod2;
+
+                        cv1 = bespoke.plugins.convenient.builder({
+                            pluginName: someOtherPlugin,
+                            dependencies: [someOtherPlugin2]
+                        });
+
+                        // Fake other plugin
+                        bespoke.plugins[someOtherPlugin] = otherPluginMethod;
+
+                        cv = bespoke.plugins.convenient.builder({
+                            pluginName: somePluginName,
+                            dependencies: [someOtherPlugin]
+                        });
+
+                        // Fake plugin
+                        bespoke.plugins[somePluginName] = emptyPluginMethod;
+
+                        // Simulate a plugin activating the deck
+                        cv.activateDeck(deck);
+
+                        expect(otherPluginMethod).toHaveBeenCalledWith(deck, true);
+                        expect(otherPluginMethod.callCount).toEqual(1);
+
+                        expect(otherPluginMethod2).toHaveBeenCalledWith(deck, true);
+                        expect(otherPluginMethod2.callCount).toEqual(1);
+
+                        // Delete fake plugin
+                        delete bespoke.plugins[somePluginName];
+
+                        // Delete fake other plugins
+                        delete bespoke.plugins[someOtherPlugin];
+                        delete bespoke.plugins[someOtherPlugin2];
+                    });
                 });
             });
         });

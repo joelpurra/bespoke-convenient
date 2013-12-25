@@ -5,6 +5,9 @@
 
     var cv,
 
+        // This is the default for a plugin that is activated for a deck, and no particular options are passed.
+        defaultPluginActivationOptions = true,
+
         // The defaults object is passed as a reference, and can be modified by global.convenientInit
         defaults = {
             logger: {
@@ -24,6 +27,8 @@
 
             global.convenientOptions = merged;
         },
+
+        pluginOptions = {},
 
         decksStorages = [],
 
@@ -63,6 +68,8 @@
         }
 
         options.dependencies = options.dependencies || [];
+
+        pluginOptions[options.pluginName] = options;
 
         var external = {},
 
@@ -132,14 +139,49 @@
                 });
             },
 
-            activateDeck = function(deck) {
-                storeDeck(deck);
+            prepareDeckDependencyCheck = function(deck) {
+                var storage = cv.getStorage(deck);
+
+                storage.activatedPlugins = storage.activatedPlugins || [];
             },
 
-            init = function() {
-                checkIfPluginWasAlreadyLoaded();
-                checkIfDependenciesHaveBeenLoaded();
+            activatePluginForDeck = function(pluginNameToActivate, deck) {
+                var storage = cv.getStorage(deck);
 
+                // TODO: perform this activation/load order check at load instead?
+                if (storage.activatedPlugins.indexOf(pluginNameToActivate) !== -1) {
+                    cv.log("The " + pluginNameToActivate + " plugin has already been activated for this deck, can't activate it twice. This might indicate a circular plugin dependency, but dependency graph traversal hasn't been implemented into convenient, so maybe not.");
+                } else {
+                    bespoke.plugins[pluginNameToActivate](deck, defaultPluginActivationOptions);
+
+                    storage.activatedPlugins.push(pluginNameToActivate);
+                }
+            },
+
+            activateDependenciesForDeck = function(pluginNameToActivateDependenciesFor, deck) {
+                var storage = cv.getStorage(deck),
+                    dependencyOptions = pluginOptions[pluginNameToActivateDependenciesFor];
+
+                // Only check for dependencies for plugins convenient knows about
+                if (dependencyOptions) {
+                    dependencyOptions.dependencies.forEach(function(dependency) {
+                        if (storage.activatedPlugins.indexOf(dependency) === -1) {
+                            activatePluginForDeck(dependency, deck);
+                            activateDependenciesForDeck(dependency, deck);
+                        }
+                    });
+                }
+
+                storage.activatedPlugins.push(pluginNameToActivateDependenciesFor);
+            },
+
+            activateDeck = function(deck) {
+                storeDeck(deck);
+                prepareDeckDependencyCheck(deck);
+                activateDependenciesForDeck(options.pluginName, deck);
+            },
+
+            bindExternal = function() {
                 external.createEventData = createEventData.bind(this);
                 external.generateErrorObject = generateErrorObject.bind(this);
                 external.fire = fire.bind(this);
@@ -147,6 +189,12 @@
                 external.log = log.bind(this);
                 external.activateDeck = activateDeck.bind(this);
                 external.getStorage = plugin.getDeckPluginStorage.bind(this, options.pluginName);
+            },
+
+            init = function() {
+                checkIfPluginWasAlreadyLoaded();
+                checkIfDependenciesHaveBeenLoaded();
+                bindExternal();
             };
 
         init();
