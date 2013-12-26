@@ -1,6 +1,6 @@
-/*global console, Math:true, bespoke:true */
+/*global console:true, bespoke:true */
 
-(function(global, console, Math, bespoke, ns, pluginName, undefined) {
+(function(global, console, bespoke, ns, pluginName, undefined) {
     "use strict";
 
     var cv,
@@ -261,4 +261,4 @@
     init();
 
     ns[pluginName] = plugin;
-}(this, console, Math, bespoke, bespoke.plugins, "convenient"));
+}(this, console, bespoke, bespoke.plugins, "convenient"));
