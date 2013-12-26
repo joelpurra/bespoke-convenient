@@ -23,7 +23,7 @@
 
             // Only merge known options
             merged.logger = {};
-            merged.logger.log = global.convenientOptions && global.convenientOptions.logger && global.convenientOptions.logger.log || defaults.logger.log;
+            merged.logger.log = (global.convenientOptions && global.convenientOptions.logger && global.convenientOptions.logger.log) || defaults.logger.log;
 
             global.convenientOptions = merged;
         },
