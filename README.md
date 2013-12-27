@@ -22,6 +22,25 @@ Since this is a plugin written for other bespoke plugin developers, have a look 
 // Convenient plugin level functions - create the variable cv in your plugin.
 var cv = bespoke.plugins.convenient.builder("myplugin");
 
+// bespoke.plugins.convenient.builder(options)
+// Require other plugin dependencies to be loaded before "myplugin".
+// This feature is only built for bespoke plugins.
+var cv = bespoke.plugins.convenient.builder({
+        pluginName: "myplugin",
+        dependencies: ["someplugin", "yetanotherplugin"]
+    });
+
+// cv.activateDeck(deck)
+// Activate convenient features and your convenient dependencies for the deck.
+cv.activateDeck(deck);
+
+// cv.getStorage(deck)
+// Get a plugin storage object for the deck. Prior deck activation is required.
+// Useful if you store state per deck, not for the entire plugin.
+var storage = cv.getStorage(deck);
+storage.anything = "Here you can save any options and state for this particular deck.";
+storage.whatever = { happens: "happens" };
+
 // cv.generateObject(message)
 // An error object with a prefixed error message.
 throw cv.generateErrorObject("Look, sometimes bad things happen, and there is nothing you can do about it, so why worry? -- Simba, The Lion King");
