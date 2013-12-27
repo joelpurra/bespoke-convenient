@@ -65,6 +65,56 @@ cv.log("Something", "happened", 1974);
 ```
 
 
+
+## Dependencies
+
+Dependencies, while easy to define, are currently very limited in that they can't be initialized with any options. Defining the dependencies in `cv.builder(...)` is equivalent to enabling them by passing the option `true`. Dependencies are loaded hierarchically though, so that's a decent improvement.
+
+### Example, with convenient's dependency management
+
+```js
+// In your bespoke-myplugin.js
+var cv = bespoke.plugins.convenient.builder({
+        pluginName: "myplugin",
+        dependencies: ["someplugin", "yetanotherplugin"]
+    });
+
+bespoke.plugins.myplugin = function(deck, options) {
+  cv.activateDeck(deck);
+
+  // Actual plugin code, depending on someplugin and yetanotherplugin...
+};
+
+
+// The user's configuration in my-presentation.js (or .html)
+bespoke.horizontal.from("article", {
+  myplugin: {
+    option1: "value",
+    option2: [1, 2, 3]
+  }
+});
+```
+
+### Fairly equivalent example, without builder
+
+Because of the hierarchical nature of the dependency loading, it can be more complex than easily visible. In some cases, plugin activation order matters.
+
+```js
+// The user's configuration in my-presentation.js (or .html)
+bespoke.horizontal.from("article", {
+  deeperplugindependency: true,
+  deepplugindependency: true,
+  someplugin: true,
+  otherplugindependency: true,
+  yetanotherplugin: true,
+  myplugin: {
+    option1: "value",
+    option2: [1, 2, 3]
+  }
+});
+```
+
+
 ## Package managers
 
 ### Bower
