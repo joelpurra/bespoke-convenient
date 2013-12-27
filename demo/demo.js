@@ -3,7 +3,5 @@
 (function(bespoke) {
     "use strict";
 
-    bespoke.horizontal.from("article", {
-        convenient: true
-    });
+    bespoke.horizontal.from("article");
 }(bespoke));
