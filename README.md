@@ -13,8 +13,6 @@ Download the [production version][min] or the [development version][max], or use
 
 ## Usage
 
----
-
 This plugin is shipped in a [UMD format](https://github.com/umdjs/umd), meaning that it is available as a CommonJS/AMD module or browser global.
 
 For example, when using CommonJS modules:
@@ -23,119 +21,58 @@ For example, when using CommonJS modules:
 var bespoke = require('bespoke'),
   convenient = require('bespoke-convenient');
 
-bespoke.from('#presentation', [
-  convenient()
-]);
+var cv = convenient.builder("myplugin");
 ```
 
 When using browser globals:
 
 ```js
-bespoke.from('#presentation', [
-  bespoke.plugins.convenient()
-]);
+var cv = bespoke.plugins.convenient.builder("myplugin");
 ```
----
 
-Include both `bespoke.js` and `bespoke-convenient.js` in your page.
-
-Since this is a plugin written for other bespoke plugin developers, have a look at the source files.
+Since this is a plugin written for other bespoke plugin developers, have a look at the source files to learn more.
 
 ```js
+// convenient.builder(pluginName)
 // bespoke.plugins.convenient.builder(pluginName)
 // Convenient plugin level functions - create the variable cv in your plugin.
-var cv = bespoke.plugins.convenient.builder("myplugin");
-
-// bespoke.plugins.convenient.builder(options)
-// Require other plugin dependencies to be loaded before "myplugin".
-// This feature is only built for bespoke plugins.
-var cv = bespoke.plugins.convenient.builder({
-        pluginName: "myplugin",
-        dependencies: ["someplugin", "yetanotherplugin"]
-    });
+var cv = convenient.builder("myplugin");
 
 // cv.activateDeck(deck)
-// Activate convenient features and your convenient dependencies for the deck.
-cv.activateDeck(deck);
+// Activate convenient features and return an object with functions bound to the deck.
+var cvBoundToDeck = cv.activateDeck(deck);
 
 // cv.getStorage(deck)
+// cvBoundToDeck.getStorage()
 // Get a plugin storage object for the deck. Prior deck activation is required.
 // Useful if you store state per deck, not for the entire plugin.
-var storage = cv.getStorage(deck);
+var storage = cvBoundToDeck.getStorage();
 storage.anything = "Here you can save any options and state for this particular deck.";
 storage.whatever = { happens: "happens" };
 
-// cv.generateObject(message)
+// cv.generateErrorObject(message)
 // An error object with a prefixed error message.
 throw cv.generateErrorObject("Look, sometimes bad things happen, and there is nothing you can do about it, so why worry? -- Simba, The Lion King");
 
 // cv.fire(deck, eventName, innerEvent, slide, customData)
+// cvBoundToDeck.fire(eventName, innerEvent, slide, customData)
 // Fire an event on the deck, with plugin name etcetera filled in.
 // innerEvent: either a DOM/browser event or a bespoke event
 // slide: either the index of the affected slide, or the slide object itself
-var success = cv.fire(deck, "myevent", e, 123, { someExtraPluginData: "data value", somePluginStatus: 999 });
+var success = cvBoundToDeck.fire("myevent", e, 123, { someExtraPluginData: "data value", somePluginStatus: 999 });
 
 // cv.createEventData(deck, eventNamespace, eventName, innerEvent, slide, eventData)
-// Creates the event same object used by cv.fire(...).
-var eventData = cv.createEventData();
+// cvBoundToDeck.createEventData(eventNamespace, eventName, innerEvent, slide, eventData)
+// Creates the event same object used by cvBoundToDeck.fire(...).
+var eventData = cvBoundToDeck.createEventData();
 
-// cv.copyArray(array)
+// convenient.copyArray(array)
 // Mostly useful for function arguments
-var args = cv.copyArray(arguments);
+var args = convenient.copyArray(arguments);
 
 // cv.log([object], ...)
 // Log a prefixed log message, by default to the developer console
 cv.log("Something", "happened", 1974);
-```
-
-
-
-## Dependencies
-
-Dependencies, while easy to define, are currently very limited in that they can't be initialized with any options. Defining the dependencies in `cv.builder(...)` is equivalent to enabling them by passing the option `true`. Dependencies are loaded hierarchically though, so that's a decent improvement.
-
-### Example, with convenient's dependency management
-
-```js
-// In your bespoke-myplugin.js
-var cv = bespoke.plugins.convenient.builder({
-        pluginName: "myplugin",
-        dependencies: ["someplugin", "yetanotherplugin"]
-    });
-
-bespoke.plugins.myplugin = function(deck, options) {
-  cv.activateDeck(deck);
-
-  // Actual plugin code, depending on someplugin and yetanotherplugin...
-};
-
-
-// The user's configuration in my-presentation.js (or .html)
-bespoke.horizontal.from("article", {
-  myplugin: {
-    option1: "value",
-    option2: [1, 2, 3]
-  }
-});
-```
-
-### Fairly equivalent example, without builder
-
-Because of the hierarchical nature of the dependency loading, it can be more complex than easily visible. In some cases, plugin activation order matters.
-
-```js
-// The user's configuration in my-presentation.js (or .html)
-bespoke.horizontal.from("article", {
-  deeperplugindependency: true,
-  deepplugindependency: true,
-  someplugin: true,
-  otherplugindependency: true,
-  yetanotherplugin: true,
-  myplugin: {
-    option1: "value",
-    option2: [1, 2, 3]
-  }
-});
 ```
 
 
