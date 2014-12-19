@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/joelpurra/bespoke-convenient.png?branch=master)](https://travis-ci.org/joelpurra/bespoke-convenient)
+[![Build Status](https://secure.travis-ci.org/joelpurra/bespoke-convenient.png?branch=master)](https://travis-ci.org/joelpurra/bespoke-convenient) [![Coverage Status](https://coveralls.io/repos/joelpurra/bespoke-convenient/badge.png)](https://coveralls.io/r/joelpurra/bespoke-convenient)
 
 # bespoke-convenient
 
@@ -12,6 +12,30 @@ Download the [production version][min] or the [development version][max], or use
 [max]: https://raw.github.com/joelpurra/bespoke-convenient/master/dist/bespoke-convenient.js
 
 ## Usage
+
+---
+
+This plugin is shipped in a [UMD format](https://github.com/umdjs/umd), meaning that it is available as a CommonJS/AMD module or browser global.
+
+For example, when using CommonJS modules:
+
+```js
+var bespoke = require('bespoke'),
+  convenient = require('bespoke-convenient');
+
+bespoke.from('#presentation', [
+  convenient()
+]);
+```
+
+When using browser globals:
+
+```js
+bespoke.from('#presentation', [
+  bespoke.plugins.convenient()
+]);
+```
+---
 
 Include both `bespoke.js` and `bespoke-convenient.js` in your page.
 
@@ -117,23 +141,16 @@ bespoke.horizontal.from("article", {
 
 ## Package managers
 
-### Bower
-
-```bash
-$ bower install bespoke-convenient
-```
-
 ### npm
 
 ```bash
 $ npm install bespoke-convenient
 ```
 
-The bespoke-convenient npm package is designed for use with [browserify](http://browserify.org/), e.g.
+### Bower
 
-```js
-require('bespoke');
-require('bespoke-convenient');
+```bash
+$ bower install bespoke-convenient
 ```
 
 ## TODO
@@ -151,12 +168,8 @@ AJ Batac, [ajbatac on flickr](https://secure.flickr.com/photos/ajbatac/), for hi
 
 ## License
 
-Copyright (c) 2013, [Joel Purra](http://joelpurra.com/) All rights reserved.
+Copyright (c) 2013, 2014, [Joel Purra](http://joelpurra.com/) All rights reserved.
 
-When using bespoke-convenient, comply to the [MIT license](http://joelpurra.mit-license.org/2013). Please see the LICENSE file for details, and the [MIT License on Wikipedia](http://en.wikipedia.org/wiki/MIT_License).
+When using bespoke-convenient, comply to the [MIT license](http://joelpurra.mit-license.org/2013-2014). Please see the LICENSE file for details, and the [MIT License on Wikipedia](http://en.wikipedia.org/wiki/MIT_License).
 
 [bespoke.js]: https://github.com/markdalgleish/bespoke.js
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/joelpurra/bespoke-convenient/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-

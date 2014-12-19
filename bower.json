@@ -1,7 +1,11 @@
 {
-  "name": "bespoke-convenient",
-  "version": "0.3.0",
-  "dependencies": {
-    "bespoke.js": "~0.3.1"
-  }
+    "name": "bespoke-convenient",
+    "version": "1.0.0-alpha.1",
+    "main": "./dist/bespoke-convenient.js",
+    "ignore": [
+        "**/.*"
+    ],
+    "dependencies": {
+        "bespoke.js": "^1.0.0"
+    }
 }

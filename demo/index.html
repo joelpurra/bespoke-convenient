@@ -1,46 +1,49 @@
 <!doctype html>
 <html>
 
-<head>
+  <head>
     <meta name="viewport" content="width=device-width" />
     <title>bespoke-convenient demo</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
-</head>
+  </head>
 
-<body>
+  <body>
 
     <h1>bespoke-convenient</h1>
 
     <article>
-        <section>
+      <section>
             <h2>Slide 1</h2>
             <p>Convenience is a place to put some shared bespoke plugin functionality that's <a href="http://markdalgleish.github.io/presentation-bespoke.js-the-road-to-1kb/#8">not necessary to keep in the core</a>.</p>
-        </section>
-        <section>
+      </section>
+      <section>
             <h2>Slide 2</h2>
             <p>I know "collecting functionality" might, perhaps, sort of, maybe go against what bespoke might have been meant to be. But whatever.</p>
-        </section>
-        <section>
+      </section>
+      <section>
             <h2>Slide 3</h2>
             <p>Convenient prefixes error, event and log messages with your plugin name. Mostly.</p>
-        </section>
-        <section>
+      </section>
+      <section>
             <h2>Slide 4</h2>
             <p>It's not like this is an advanced library - I just wanted to move some stuff away from other plugin code.</p>
-        </section>
-        <section>
+      </section>
+      <section>
             <h2>Slide 5</h2>
             <p>That's it, really. I was bored, and wanted to create a bespoke.js plugin. Enjoy!</p>
             <p><a href="https://github.com/joelpurra/bespoke-convenient" target="_blank">https://github.com/joelpurra/bespoke-convenient</a>
             </p>
             <p><a href="http://joelpurra.com/" target="_blank">joelpurra.com</a>
             </p>
-        </section>
+      </section>
     </article>
 
-    <script src="../bower_components/bespoke.js/dist/bespoke.js"></script>
-    <script src="../src/bespoke-convenient.js"></script>
+    <script src="../node_modules/bespoke/dist/bespoke.js"></script>
+    <script src="../node_modules/bespoke-keys/dist/bespoke-keys.js"></script>
+    <script src="../node_modules/bespoke-touch/dist/bespoke-touch.js"></script>
+    <script src="../node_modules/bespoke-classes/dist/bespoke-classes.js"></script>
+    <script src="../dist/bespoke-convenient.js"></script>
     <script src="demo.js"></script>
-</body>
+  </body>
 
 </html>
