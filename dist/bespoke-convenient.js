@@ -168,9 +168,25 @@ plugin.builder = function self(options) {
             }
         },
 
+        bindToDeck = function(deck) {
+            var deckBound = {};
+
+            deckBound.createEventData = external.createEventData.bind(this, deck);
+            deckBound.fire = external.fire.bind(this, deck);
+            deckBound.getStorage = external.getStorage.bind(this, deck);
+
+            return deckBound;
+        },
+
         activateDeck = function(deck) {
+            var deckBound;
+
             throwIfPluginWasAlreadyInitiatedForDeck(deck);
             initiateDeckPluginStorage(options.pluginName, deck);
+
+            deckBound = bindToDeck(deck);
+
+            return deckBound;
         },
 
         bindExternal = function() {
