@@ -196,6 +196,63 @@ var convenient = require("../../lib-instrumented/bespoke-convenient.js");
             });
         });
 
+        describe("convenient.getDeckStorage", function() {
+            it("should fail for null deck", function() {
+                expect(function() {
+                    var storage = convenient.getDeckStorage(null);
+                }).toThrow();
+            });
+        });
+
+        describe("convenient.getDeckPluginStorage", function() {
+            it("should fail for null pluginName", function() {
+                expect(function() {
+                    var storage = convenient.getDeckPluginStorage(null, null);
+                }).toThrow();
+            });
+        });
+
+        describe("convenient.getDeckPluginStorage", function() {
+            it("should fail for null deck", function() {
+                expect(function() {
+                    var storage = convenient.getDeckPluginStorage(somePluginName, null);
+                }).toThrow();
+            });
+        });
+
+        describe("convenient.createEventData", function() {
+            var createConvenient = function() {
+                cv = convenient.builder(somePluginName);
+            };
+
+            beforeEach(createConvenient);
+
+            describe("calling with deck context", function() {
+                beforeEach(createDeck);
+
+                var eventNamespace = "spec",
+                    eventName = "createEventData";
+
+                it("should have an index property when initalized with a slide object", function() {
+                    var index = 3,
+                        slide = deck.slides[index],
+                        eventData = convenient.createEventData.call(deck, eventNamespace, eventName, null, slide);
+
+                    expect(eventData.index).toBe(index);
+                    expect(eventData.slide).toBe(slide);
+                });
+
+                it("should have a slide property when initalized with a slide index", function() {
+                    var index = 3,
+                        slide = deck.slides[index],
+                        eventData = convenient.createEventData.call(deck, eventNamespace, eventName, null, index);
+
+                    expect(eventData.index).toBe(index);
+                    expect(eventData.slide).toBe(slide);
+                });
+            });
+        });
+
         describe("cv.builder advanced options", function() {
             describe("options.pluginName", function() {
                 var createConvenient = function() {
