@@ -153,15 +153,11 @@ plugin.builder = function self(options) {
             return deck.fire(eventInNamespace(eventName), createEventData(deck, eventNamespace, eventName, innerEvent, slide, customData));
         },
 
-        copyArray = function(arr) {
-            return [].slice.call(arr, 0);
-        },
-
         log = function() {
             var prefixes = [tag];
 
             // browserGlobal.convenientOptions.logger.log is dynamic, so can't bind directly to it
-            browserGlobal.convenientOptions.logger.log.apply(browserGlobal.convenientOptions.logger.log, prefixes.concat(copyArray(arguments)));
+            browserGlobal.convenientOptions.logger.log.apply(browserGlobal.convenientOptions.logger.log, prefixes.concat(plugin.copyArray(arguments)));
         },
 
         throwIfPluginWasAlreadyInitiatedForDeck = function(deck) {
@@ -181,7 +177,6 @@ plugin.builder = function self(options) {
             external.createEventData = createEventData.bind(this);
             external.generateErrorObject = generateErrorObject.bind(this);
             external.fire = fire.bind(this);
-            external.copyArray = copyArray.bind(this);
             external.log = log.bind(this);
             external.activateDeck = activateDeck.bind(this);
             external.getStorage = plugin.getDeckPluginStorage.bind(this, options.pluginName);
@@ -254,6 +249,10 @@ plugin.createEventData = function(eventNamespace, eventName, innerEvent, slide, 
     }
 
     return eventData;
+};
+
+plugin.copyArray = function(arr) {
+    return [].slice.call(arr, 0);
 };
 
 cv = plugin.builder(pluginName);

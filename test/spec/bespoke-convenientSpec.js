@@ -88,23 +88,6 @@ var convenient = require("../../lib-instrumented/bespoke-convenient.js");
                 });
             });
 
-            describe("cv.copyArray", function() {
-                it("should copy an empty array", function() {
-                    var array = [],
-                        copy = cv.copyArray(array);
-
-                    expect(array.length).toBe(copy.length);
-                });
-
-                it("should copy an array with elements", function() {
-                    var array = ["stuff"],
-                        copy = cv.copyArray(array);
-
-                    expect(array.length).toBe(copy.length);
-                    expect(array[0]).toBe(copy[0]);
-                });
-            });
-
             describe("cv.log", function() {
                 var internalLogger = browserGlobal.convenientOptions.logger,
 
@@ -193,6 +176,23 @@ var convenient = require("../../lib-instrumented/bespoke-convenient.js");
                     storage2 = cv.getStorage(deck);
                     expect(storage2.whatever).toBe(data);
                 });
+            });
+        });
+
+        describe("convenient.copyArray", function() {
+            it("should copy an empty array", function() {
+                var array = [],
+                    copy = convenient.copyArray(array);
+
+                expect(array.length).toBe(copy.length);
+            });
+
+            it("should copy an array with elements", function() {
+                var array = ["stuff"],
+                    copy = convenient.copyArray(array);
+
+                expect(array.length).toBe(copy.length);
+                expect(array[0]).toBe(copy[0]);
             });
         });
 
