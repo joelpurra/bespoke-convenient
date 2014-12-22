@@ -1,3 +1,7 @@
+/*global require:true */
+
+'use strict';
+
 var gulp = require('gulp'),
     clean = require('gulp-clean'),
     jshint = require('gulp-jshint'),

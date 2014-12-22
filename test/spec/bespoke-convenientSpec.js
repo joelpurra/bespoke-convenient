@@ -1,13 +1,16 @@
-/*global document:true, jasmine:true, bespoke:true, describe:true, it:true, expect:true, beforeEach:true, spyOn:true */
+/*global require:true, document:true, jasmine:true, describe:true, it:true, expect:true, beforeEach:true, spyOn:true */
 
-// Test bespoke's browser global 'bespoke.plugins.convenient()' mode.
+// TODO: Test bespoke's browser global 'bespoke.plugins.convenient()' mode.
 
 Function.prototype.bind = Function.prototype.bind || require("function-bind");
 
-var bespoke = require("bespoke");
-var convenient = require("../../lib-instrumented/bespoke-convenient.js");
+var bespoke = require("bespoke"),
+    convenient = require("../../lib-instrumented/bespoke-convenient.js"),
+    browserGlobal = (function(f) {
+        return f("return this")();
+    }(Function));
 
-(function(browserGlobal, document, jasmine, bespoke, describe, it, expect, beforeEach, spyOn) {
+(function(browserGlobal, document, jasmine, bespoke, describe, it, expect, beforeEach, spyOn, undefined) {
     "use strict";
 
     describe("bespoke-convenient", function() {
@@ -339,6 +342,4 @@ var convenient = require("../../lib-instrumented/bespoke-convenient.js");
             });
         });
     });
-}((function(f) {
-    return f("return this")();
-})(Function), document, jasmine, bespoke, describe, it, expect, beforeEach, spyOn));
+}(browserGlobal, document, jasmine, bespoke, describe, it, expect, beforeEach, spyOn));

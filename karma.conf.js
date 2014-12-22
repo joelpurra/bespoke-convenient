@@ -1,3 +1,7 @@
+/*global module:true */
+
+'use strict';
+
 module.exports = function(config) {
     config.set({
         basePath: '',
