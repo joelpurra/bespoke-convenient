@@ -1,6 +1,6 @@
 {
     "name": "bespoke-convenient",
-    "version": "1.0.0-alpha.1",
+    "version": "1.0.0",
     "main": "./dist/bespoke-convenient.js",
     "ignore": [
         "**/.*"
