@@ -1,6 +1,8 @@
 [![Build Status](https://secure.travis-ci.org/joelpurra/bespoke-convenient.png?branch=master)](https://travis-ci.org/joelpurra/bespoke-convenient) [![Coverage Status](https://coveralls.io/repos/joelpurra/bespoke-convenient/badge.png)](https://coveralls.io/r/joelpurra/bespoke-convenient)
 
-# bespoke-convenient
+# [bespoke-convenient](https://github.com/joelpurra/bespoke-convenient)
+
+**Check out the [presentation/demo.](https://joelpurra.github.io/bespoke-convenient/demo/)**
 
 Convenient extension methods for building [Bespoke.js][bespoke.js] plugins. This plugin is targeted towards plugin developers, not everyday bespoke users looking to make a nice presentation.
 

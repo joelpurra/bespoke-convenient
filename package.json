@@ -45,7 +45,8 @@
         "lodash": "^2.4.1",
         "vinyl-buffer": "0.0.0",
         "vinyl-map": "^1.0.1",
-        "vinyl-source-stream": "^0.1.1"
+        "vinyl-source-stream": "^0.1.1",
+        "gulp-gh-pages": "joelpurra/gulp-gh-pages"
     },
     "engines": {
         "node": ">=0.10.0"
