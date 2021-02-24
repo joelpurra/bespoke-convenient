@@ -6,7 +6,7 @@
     "bugs": "https://github.com/joelpurra/bespoke-convenient/issues",
     "author": {
         "name": "Joel Purra",
-        "url": "http://joelpurra.com/"
+        "url": "https://joelpurra.com/"
     },
     "main": "./lib/bespoke-convenient.js",
     "repository": {
@@ -46,15 +46,17 @@
         "vinyl-buffer": "0.0.0",
         "vinyl-map": "^1.0.1",
         "vinyl-source-stream": "^0.1.1",
-        "gulp-gh-pages": "joelpurra/gulp-gh-pages"
+        "gulp-gh-pages": "^0.4.0"
     },
     "engines": {
         "node": ">=0.10.0"
     },
-    "licenses": [{
-        "type": "MIT",
-        "url": "http://joelpurra.mit-license.org/2013-2014"
-    }],
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "https://joelpurra.mit-license.org/2013-2014"
+        }
+    ],
     "keywords": [
         "bespoke-plugin"
     ]
