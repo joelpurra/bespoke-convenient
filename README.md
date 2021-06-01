@@ -6,6 +6,14 @@
 
 Convenient extension methods for building [Bespoke.js][bespoke.js] plugins. This plugin is targeted towards plugin developers, not everyday bespoke users looking to make a nice presentation.
 
+
+
+> ## ⚠️ This project has been archived
+>
+> No future updates are planned. Feel free to continue using it, but expect no support.
+
+
+
 ## Download
 
 Download the [production version][min] or the [development version][max], or use a [package manager](#package-managers).
